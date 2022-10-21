@@ -1,0 +1,40 @@
+{% extends 'base4.html' %}
+{% block body %}
+
+   
+
+
+
+<table  class="table text-center  " style="border: 1px solid;">
+  <h1 class="text-center ">Vehicle Management</h1>
+  <tr>
+      <th>sl.no</th>
+      <th>Vehicle Number</th>
+      <th>Vehicle Type</th>
+      <th>Vehicle Model</th>
+      <th>Vehicle Description</th>
+  
+      
+      
+     
+     
+      <!-- <th>Action</th> -->
+  </tr>
+  {% for p in std %}
+ <tr>
+      <td>{{forloop.counter}}</td>
+      <td>{{p.vehicle_number}}</td>
+      <td>{{p.vehicle_type}}</td>
+      <td>{{p.vehicle_model}}</td>
+      <td>{{p.vehicle_description}}</td>
+      
+      
+  </tr>
+  {% endfor %}
+  
+</table>
+
+
+{% endblock %}
+
+
