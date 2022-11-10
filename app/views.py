@@ -131,7 +131,7 @@ def add_desigination(request):
                 return redirect('add_desigination')
             else:
                 #desigination saving only uppercase
-                std=Desigination(desigination=desigination.upper())
+                std=Desigination(desigination=desigination)
                 std.save()
                 messages.success(request,'desigination Add successfully')
                 return redirect('add_desigination')
