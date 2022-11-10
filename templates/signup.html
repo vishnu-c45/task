@@ -80,6 +80,7 @@
                     
                     <div class="form-outline flex-fill mb-0">
                       <select  id="form3Example4cd" name="desiginations" required class="form-control">
+                        <option value="">< ---- choose desigination ----></option>
                         {% for p in std %}
                         <option value="{{p.id}}">{{p.desigination}}</option>
                         {% endfor %}
