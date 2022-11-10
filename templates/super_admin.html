@@ -1,9 +1,27 @@
 {% extends 'base2.html' %}
 {% block body %}
 
+<div class="row">
+    <div class="col sm-3"></div>
+    <div class="col sm-6">
+        {% for message in messages  %}
+    
+        {% if message.tags == 'error' %}
+        <div class="alert alert-danger text-center">
+            {{message}}
+        </div>
+
+        {% endif %}
+ {% endfor %}
+
+    </div>
+    <div class="col sm-3"></div>
+
+</div>
 
 
-<table  class="table text-center  " style="border: 1px solid;">
+
+<table  class="table text-center ">
     <h1 class="text-center ">Vehicle Management</h1>
     <tr>
         <th>sl.no</th>
@@ -33,6 +51,13 @@
     {% endfor %}
     
 </table>
+
+<script>
+
+    $(document).ready(function(){
+        $('.alert').hide(4000);
+    })
+</script>
 
 
 {% endblock %}

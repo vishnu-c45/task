@@ -10,7 +10,7 @@
           <div class="card bg-dark text-white" style="border-radius: 1rem;">
             <div class="card-body p-5 text-center">
               {% for message in messages %}
-              <div class="text-center text-danger ">
+              <div class="alert text-center alert-danger ">
                 {{message}}
               </div>
               {% endfor %}
@@ -23,18 +23,18 @@
               <form action="{% url 'login_page' %}" method="post" enctype="">
                 {% csrf_token %}
                 <div class="form-outline form-white mb-4">
-                  <input type="text" name="username" id="typeEmailX" name="username" class="form-control form-control-lg" />
-                  <label class="form-label"  for="typeEmailX">Username</label>
+                  <input type="text" name="username" id="user" name="username" class="form-control form-control-lg" />
+                  <label class="form-label"   for="typeEmailX">Username</label>
                 </div>
   
                 <div class="form-outline form-white mb-4">
-                  <input type="password" name="password" id="typePasswordX" class="form-control form-control-lg" />
+                  <input type="password" name="password" id="pass"  class="form-control form-control-lg" />
                   <label class="form-label"   for="typePasswordX">Password</label>
                 </div>
   
                 <!-- <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p> -->
   
-                <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
+                <button class="btn btn-outline-light btn-lg px-5" id="btn1" typ="submit">Login</button>
   
               </form>
                 <div class="d-flex justify-content-center text-center mt-4 pt-1">
@@ -69,5 +69,15 @@
             }
     </style>
   </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+    
+    $(document).ready(function(){
+      $('.alert').hide(4000);
+    })
+
+  </script>
 
 {% endblock %}

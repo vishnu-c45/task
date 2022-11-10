@@ -4,25 +4,26 @@ from django.contrib import messages
 from .models import *
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse,HttpResponse
 
 # Create your views here.
-
+#home
 def home(request):
     return render(request,'home.html')
 
-
+#signup page
 def signup(request):
     std=Desigination.objects.all()
     return render(request,'signup.html',{'std':std})
 
-
+#admin page
 def adminhome(request):
     if 'amname' in request.session:
         std=Vehicle_registeration.objects.all()
         return render(request,'admin_home.html',{'std':std})
     return redirect('user_logout')
 
-
+#load user home 
 def userhome(request):
     if 'pid' in request.session:
         pk=request.session['pid']
@@ -31,6 +32,8 @@ def userhome(request):
         return render(request,'user_home.html',{'std':std,'user':username})
     return redirect('user_logout')
 
+
+#super admin page
 def super_admin(request):
     if 'username' in request.session:
         userid=request.session['username']
@@ -38,6 +41,7 @@ def super_admin(request):
         return render(request,'super_admin.html',{'std':std})
     return redirect('user_logout')
 
+#login user,admin,superadmin
 def login_page(request):
     if request.method== 'POST':
         username=request.POST['username']
@@ -47,24 +51,24 @@ def login_page(request):
             # auth.login(request,user)
             request.session['username']=user.id
             return redirect('super_admin') 
-        elif Registration.objects.filter(username=username,password=password,desigination_id=1):
+        elif Registration.objects.filter(username=username,password=password,desigination=Desigination.objects.get(desigination="USER")):
             pm=Registration.objects.get(username=username,password=password)
             request.session['pid']=pm.id
             request.session['pname']=pm.username
             return redirect('userhome')
-        elif Registration.objects.filter(username=username,password=password,desigination_id=2):
+        elif Registration.objects.filter(username=username,password=password,desigination=Desigination.objects.get(desigination="ADMIN")):
             am=Registration.objects.get(username=username,password=password)
             request.session['am.id']=am.id
             request.session['amname']=am.username
             return redirect('adminhome')
         else:
-            messages.error(request,'username does not exists')
-            return redirect('login_page')       
+            messages.error(request,'user does not exists')
+            return redirect('login_page')               
     logout(request)    
     return render(request,'login.html')
 
 
-
+#register user and admin
 def registration(request):
     if request.method == 'POST':
         firstname = request.POST['first_name']
@@ -77,36 +81,27 @@ def registration(request):
         
         if password == confirmpassword:
             if  User.objects.filter(username=username):
-                messages.info(request,'username already exists')
-                return redirect('registration')
+                messages.error(request,'username already exists')
+                return redirect('signup')
             elif Registration.objects.filter(username=username):
-                messages.info(request,'username already exists')
-                return redirect('registration')
+                messages.error(request,'username already exists')
+                return redirect('signup')
                 
             else:
                 user = Registration(first_name=firstname,last_name=lastname,email=email,username=username,password=password,
                                     desigination_id=desiginations)
                 user.save()
-                print('hi')
-                msg_success = "Registration Successfull"
-                messages.info(request, 'Registration successfully completed')
-                return render(request,'signup.html',{'msg_success':msg_success})
+                messages.success(request, 'Registration successfully completed')
+                return redirect('signup')
         else:
-            messages.info(request, 'password not matching')
+            messages.error(request, 'password not matching')
             return redirect('registration')
    
     return redirect('signup')
 
 
-
-
-
-
-# def user_logout(request):
-#     if 'username' in request.session:
-#         request.session.flush()
-#     return redirect('login_page')    
-
+  
+#create vehicle registration
 def add_vehicle(request):
     if 'username' in request.session:
         userid=request.session['username']
@@ -121,11 +116,31 @@ def add_vehicle(request):
                                       vehicle_description=vehicle_description,
                                       user_id=userid)
             stm.save()
-            print('hi')
-            return redirect('super_admin')
+            messages.success(request,'successfully created')
+            return redirect('add_vehicle')
         return render(request,'add_vehicle.html')
     return redirect('user_logout')
 
+#add desigination in superadmin
+def add_desigination(request):
+    if 'username' in request.session:
+        if request.method== 'POST':
+            desigination=request.POST['desi']
+            if Desigination.objects.filter(desigination=desigination):
+                messages.warning(request,'desigination already exists')
+                return redirect('add_desigination')
+            else:
+                #desigination saving only uppercase
+                std=Desigination(desigination=desigination.upper())
+                std.save()
+                messages.success(request,'desigination Add successfully')
+                return redirect('add_desigination')
+        return render(request,'add_desigination.html')
+    return redirect('user_logout')
+
+
+
+#update vehicle registration in super admin
 def update_vehicle(request,pk):
     if 'username' in request.session:
         std=Vehicle_registeration.objects.get(id=pk)
@@ -140,7 +155,7 @@ def update_vehicle(request,pk):
     return redirect('user_logout')
 
 
-
+#update vehicle registration in admin
 def update_vehicle_admin(request,pk):
     if 'amname' in request.session:
         std=Vehicle_registeration.objects.get(id=pk)
@@ -154,15 +169,32 @@ def update_vehicle_admin(request,pk):
         return render(request,'admin_update.html',{'std':std})
     return redirect('user_logout')
 
-
+#delete vehicle registration
 def delete_vehicle(request,pk):
     if 'username' in request.session:
         std=Vehicle_registeration.objects.get(id=pk)
         std.delete()
+        messages.error(request,'deleted successfully')
         return redirect('super_admin')
     return redirect('user_logout')
 
+#To view user and admin accounts in super admin
+def user_admin_list(request):
+    if 'username' in request.session:
+        std=Registration.objects.all()
+        return render(request,'user_admin_action.html',{'std':std})
+    return redirect('user_logout')
 
+#delete user and admin accounts
+def delete_user_admin(request,pk):
+    if 'username' in request.session:
+        std=Registration.objects.get(id=pk)
+        std.delete()
+        messages.success(request,'deleted successfully')
+        return redirect('user_admin_list')
+    return redirect('user_logout')
+
+#logout function
 def user_logout(request):
     logout(request)
     return redirect('login_page')  

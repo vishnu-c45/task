@@ -1,0 +1,66 @@
+{% extends 'base2.html' %}
+{% block body %}
+
+
+<div class="row">
+    <div class="col sm-3"></div>
+    <div class="col sm-6">
+        {% for message in messages  %}
+    
+        {% if message.tags == 'success' %}
+        <div class="alert alert-danger text-center">
+            {{message}}
+        </div>
+
+        {% endif %}
+ {% endfor %}
+
+    </div>
+    <div class="col sm-3"></div>
+
+</div>
+
+   
+
+
+
+<table  class="table text-center">
+  <h1 class="text-center ">User & Admin management</h1>
+  <tr>
+      <th>sl.no</th>
+      <th>UserName</th>
+      <th>Email</th>
+      <th>Desigination</th>
+      <th>Action</th>
+      
+      
+     
+     
+      <!-- <th>Action</th> -->
+  </tr>
+  {% for p in std %}
+ <tr>
+      <td>{{forloop.counter}}</td>
+      <td>{{p.username}}</td>
+      <td>{{p.email}}</td>
+      <td>{{p.desigination.desigination}}</td>
+      <td><a href="{% url 'delete_user_admin' p.id %}" class="btn btn-danger ">Delete</a></td>
+
+      
+  </tr>
+  {% endfor %}
+  
+</table>
+
+<script>
+
+    $(document).ready(function(){
+        $('.alert').hide(4000);
+    })
+</script>
+
+
+
+{% endblock %}
+
+
